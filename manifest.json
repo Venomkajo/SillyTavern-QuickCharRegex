@@ -1,0 +1,11 @@
+{
+    "display_name": "Quick Character Regex",
+    "loading_order": 9,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "Venomkajo",
+    "version": "1.0.0",
+    "homePage": "github.com/Venomkajo/SillyTavern-QuickCharRegex"
+}
