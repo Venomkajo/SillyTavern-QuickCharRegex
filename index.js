@@ -86,7 +86,7 @@ jQuery(async () => {
 
   // Append the HTML to the appropriate places in the DOM
   $("#extensions_settings").append(settingsHTML);
-  $("#description_div").append(regexRowHTML);
+  $("#descriptionWrapper").append(regexRowHTML);
 
   // Listening for events
   $("#regex-replace-button").on("click", onReplaceButtonClick);

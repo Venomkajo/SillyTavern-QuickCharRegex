@@ -1,1 +1,8 @@
-/* All style elements for your extension go here */
+#regex-pattern-input, #replacement-string-input {
+    margin-right: 5px;
+}
+
+#regex-replace-button {
+    width: 80px;
+    padding: 5px;
+}
