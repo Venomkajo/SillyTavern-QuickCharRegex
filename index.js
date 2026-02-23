@@ -1,17 +1,18 @@
-// The main script for the extension
-// The following are examples of some basic extension functionality
-
-//You'll likely need to import extension_settings, getContext, and loadExtensionSettings from extensions.js
+// Importing necessary functions and variables from the main extension script
 import { extension_settings, getContext, loadExtensionSettings } from "../../../extensions.js";
 
-//You'll likely need to import some other functions from the main script
+// Importing debounced save functions to save data immediately
 import { saveSettingsDebounced, saveCharacterDebounced } from "../../../../script.js";
 
 // Keep track of where your extension is located, name should match repo name
 const extensionName = "SillyTavern-QuickCharRegex";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
+// Define default settings for your extension
 const extensionSettings = extension_settings[extensionName];
-const defaultSettings = {"method": "simple"};
+const defaultSettings = {method: "simple", field: "description"};
+
+// Define valid fields and their corresponding selectors
+const validFields = {description: "#description_textarea", first_mes: "#first_message_textarea", mes_example: "#mes_example_textarea", scenario: "#scenario_pole", personality: "#personality_textarea"};
 
 
  
@@ -25,15 +26,23 @@ async function loadSettings() {
 
   // Updating settings in the UI
   $("#method-setting").val(extension_settings[extensionName].method).trigger("input");
+  $("#field-setting").val(extension_settings[extensionName].field).trigger("input");
 }
 
-// This function is called when the extension settings are changed in the UI
+// These functions are called when the extension settings are changed in the UI
 function onMethodInput(event) {
   const method_value = $(event.target).val();
   extension_settings[extensionName].method = method_value;
   saveSettingsDebounced();
 }
 
+function onFieldSelect(event) {
+  const selectedField = $(event.target).val();
+  extension_settings[extensionName].field = selectedField;
+  saveSettingsDebounced();
+}
+
+// This function is called when the "Replace" button is clicked
 function onReplaceButtonClick() {
   const pattern = $("#regex-pattern-input").val();
   const replacement = $("#replacement-string-input").val();
@@ -42,16 +51,21 @@ function onReplaceButtonClick() {
 
   try {
   if (pattern && replacement && context && method && context.characters[context.characterId]) {
-  let description = context.characters[context.characterId].description;
+  let field = context.characters[context.characterId][extension_settings[extensionName].field];
 
+  // Perform the replacement based on the selected method
   if (method === "regex") {
     const regex = new RegExp(pattern, "g");
-    description = description.replace(regex, replacement);
+    field = field.replace(regex, replacement);
   } else {
-    description = description.replaceAll(pattern, replacement);
+    field = field.replaceAll(pattern, replacement);
   }
 
-  $("#description_textarea").val(description);
+  // Update the character's field chosen in the settings
+  const fieldSelector = validFields[extension_settings[extensionName].field];
+  if (fieldSelector) {
+    $(fieldSelector).val(field);
+  }
 
   saveCharacterDebounced();
 
@@ -59,27 +73,26 @@ function onReplaceButtonClick() {
 
   }
   } catch (error) {
-    toastr.error("An error occurred while performing the replacement. Please check your pattern and try again.", "Error");
+    toastr.error(error.message, "Error");
     return;
   }
 }
 
 // This function is called when the extension is loaded
 jQuery(async () => {
-  // This is an example of loading HTML from a file
+  // Loading HTML from a file
   const regexRowHTML = await $.get(`${extensionFolderPath}/regex_row.html`);
   const settingsHTML = await $.get(`${extensionFolderPath}/settings.html`);
 
-  // Append settingsHtml to extensions_settings
-  // extension_settings and extensions_settings2 are the left and right columns of the settings menu
-  // Left should be extensions that deal with system functions and right should be visual/UI related 
+  // Append the HTML to the appropriate places in the DOM
   $("#extensions_settings").append(settingsHTML);
   $("#description_div").append(regexRowHTML);
 
-  // These are examples of listening for events
+  // Listening for events
   $("#regex-replace-button").on("click", onReplaceButtonClick);
   $("#method-setting").on("input", onMethodInput);
+  $("#field-setting").on("change", onFieldSelect);
 
-  // Load settings when starting things up (if you have any)
+  // Load settings when starting things up
   loadSettings();
 });
