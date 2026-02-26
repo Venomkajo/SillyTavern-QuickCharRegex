@@ -1,33 +1,32 @@
-# SillyTavern Extension Example
+# SillyTavern-QuickCharRegex
 
-*Provide a brief description of how your extension works, what problem it aims to solve.*
+**SillyTavern-QuickCharRegex** is a productivity extension designed for Sillytavern users. It provides a streamlined way to perform bulk text replacements—using either simple text or Regular Expressions (Regex)—directly within the app.
 
 ## Features
 
-*Describe some of the main selling points of your extension.*
+* **Multi-Field Targeting:** Perform quick replacements on Description, First Message, Dialogue Examples, Scenario, or Personality fields.
+* **Regex Support:** Use powerful Regular Expressions for complex pattern matching and text manipulation.
+* **Simple Replace:** A "Simple" mode for straightforward string swapping without worrying about regex syntax.
+
+---
 
 ## Installation and Usage
 
 ### Installation
 
-*In most cases, this should just be using ST's inbuilt extension installer.* 
+1. Open SillyTavern and go to the **Extensions** menu.
+2. Select **Install Extension**.
+3. Paste the URL of this repository (https://github.com/Venomkajo/SillyTavern-QuickCharRegex) and click **Install**.
 
 ### Usage
 
-*Explain how to use this extension.*
+1. Look for the new **Quick Regex** row added near the description area.
+2. Enter the **Pattern** you want to find and the **Replacement** text.
+3. Click **Replace**.
+4. To change which field is targeted or switch between "Regex" and "Simple" modes, go to the **Extension Settings** panel.
+
+---
 
 ## Prerequisites
 
-*Specify the version of ST necessary here.*
-
-## Support and Contributions
-
-*Where should someone ask for support?*
-
-*Consider including your own contact info for help/questions.*
-
-*How can people help add to this extension?*
-
-## License
-
-*Be cool, use an open source license.*
+* **SillyTavern:** Tested on 1.16.0, should work on earlier versions.
