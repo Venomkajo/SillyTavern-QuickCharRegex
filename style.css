@@ -1,8 +1,13 @@
-#regex-pattern-input, #replacement-string-input {
-    margin-right: 5px;
+#regex-replace-button {
+    width: 100px;
+    padding: 5px;
+    margin-top: 10px;
 }
 
-#regex-replace-button {
-    width: 80px;
-    padding: 5px;
+.quick-char-regex-row {
+    margin-top: 15px;
+}
+
+.quick-char-regex-select-block {
+    margin-top: 15px;
 }

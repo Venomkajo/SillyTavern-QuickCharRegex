@@ -82,11 +82,9 @@ function onReplaceButtonClick() {
 jQuery(async () => {
   // Loading HTML from a file
   const regexRowHTML = await $.get(`${extensionFolderPath}/regex_row.html`);
-  const settingsHTML = await $.get(`${extensionFolderPath}/settings.html`);
 
   // Append the HTML to the appropriate places in the DOM
-  $("#extensions_settings").append(settingsHTML);
-  $("#descriptionWrapper").append(regexRowHTML);
+  $("#personality_div").before(regexRowHTML);
 
   // Listening for events
   $("#regex-replace-button").on("click", onReplaceButtonClick);
