@@ -23,7 +23,7 @@
 1. Look for the new **Quick Char Regex** added in advanced definitions area.
 2. Enter the **Pattern** you want to find and the **Replacement** text.
 3. Click **Replace**.
-4. To change which field is targeted or switch between "Regex" and "Simple" modes, change it at their respective selectors, available at the same place.
+4. To change which field is targeted or switch between replacement modes, change it at their respective selectors, available at the same menu.
 
 ---
 
