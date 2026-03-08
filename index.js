@@ -42,6 +42,10 @@ function onFieldSelect(event) {
   saveSettingsDebounced();
 }
 
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 // This function is called when the "Replace" button is clicked
 function onReplaceButtonClick() {
   const pattern = $("#regex-pattern-input").val();
@@ -57,9 +61,12 @@ function onReplaceButtonClick() {
   if (method === "regex") {
     const regex = new RegExp(pattern, "g");
     field = field.replace(regex, replacement);
-  } else {
+} else if (method === "simple") {
     field = field.replaceAll(pattern, replacement);
-  }
+} else if (method === "whole-words") {
+    const regex = new RegExp(`(?<!\\w)${escapeRegExp(pattern)}(?!\\w)`,"g");
+    field = field.replace(regex, replacement);
+}
 
   // Update the character's field chosen in the settings
   const fieldSelector = validFields[extension_settings[extensionName].field];
