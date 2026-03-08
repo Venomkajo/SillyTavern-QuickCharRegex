@@ -14,7 +14,8 @@ const defaultSettings = {method: "simple", field: "description"};
 // Define valid fields and their corresponding selectors
 const validFields = {description: "#description_textarea", first_mes: "#first_message_textarea", mes_example: "#mes_example_textarea", scenario: "#scenario_pole", personality: "#personality_textarea"};
 
-
+let undoContent = null;
+let undoField = null;
  
 // Loads the extension settings if they exist, otherwise initializes them to the defaults.
 async function loadSettings() {
@@ -42,6 +43,21 @@ function onFieldSelect(event) {
   saveSettingsDebounced();
 }
 
+function onUndoButtonClick() {
+  if (undoContent != null && undoField != null) {
+    const fieldSelector = validFields[undoField];
+    $(fieldSelector).val(undoContent);
+    undoContent = null;
+    undoField = null;
+
+    saveCharacterDebounced();
+
+    toastr.success("Undo successful!", "Your character has been reverted to the previous state.");
+
+    $("#undo-button").prop("disabled", true);
+  }
+}
+
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -57,12 +73,16 @@ function onReplaceButtonClick() {
   if (pattern && replacement && context && method && context.characters[context.characterId]) {
   let field = context.characters[context.characterId][extension_settings[extensionName].field];
 
+  undoContent = field; // Store the original content for undo functionality
+  undoField = extension_settings[extensionName].field;
+
   // Perform the replacement based on the selected method
   if (method === "regex") {
     const regex = new RegExp(pattern, "g");
     field = field.replace(regex, replacement);
 } else if (method === "simple") {
-    field = field.replaceAll(pattern, replacement);
+    const regex = new RegExp(escapeRegExp(pattern), "g");
+    field = field.replace(regex, replacement);
 } else if (method === "whole-words") {
     const regex = new RegExp(`(?<!\\w)${escapeRegExp(pattern)}(?!\\w)`,"g");
     field = field.replace(regex, replacement);
@@ -77,6 +97,8 @@ function onReplaceButtonClick() {
   saveCharacterDebounced();
 
   toastr.success("Replacement complete!", "Your character has been updated.");
+
+  $("#undo-button").prop("disabled", false);
 
   }
   } catch (error) {
@@ -97,6 +119,11 @@ jQuery(async () => {
   $("#regex-replace-button").on("click", onReplaceButtonClick);
   $("#method-setting").on("input", onMethodInput);
   $("#field-setting").on("change", onFieldSelect);
+  $("#undo-button").on("click", onUndoButtonClick);
+
+  if (undoContent == null || undoField == null) {
+    $("#undo-button").prop("disabled", true);
+  }
 
   // Load settings when starting things up
   loadSettings();
