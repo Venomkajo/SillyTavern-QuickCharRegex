@@ -12,7 +12,7 @@ const extensionSettings = extension_settings[extensionName];
 const defaultSettings = {method: "simple", field: "description"};
 
 // Define valid fields and their corresponding selectors
-const validFields = {description: "#description_textarea", first_mes: "#first_message_textarea", mes_example: "#mes_example_textarea", scenario: "#scenario_pole", personality: "#personality_textarea"};
+const validFields = {description: "#description_textarea", first_mes: "#firstmessage_textarea", mes_example: "#mes_example_textarea", scenario: "#scenario_pole", personality: "#personality_textarea"};
 
 let undoContent = null;
 let undoField = null;
