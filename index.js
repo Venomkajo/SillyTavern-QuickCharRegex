@@ -62,6 +62,10 @@ function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function changeExtensionView() {
+  $("#quick-regex-menu").toggle();
+}
+
 // This function is called when the "Replace" button is clicked
 function onReplaceButtonClick() {
   const pattern = $("#regex-pattern-input").val();
@@ -111,11 +115,16 @@ function onReplaceButtonClick() {
 jQuery(async () => {
   // Loading HTML from a file
   const regexRowHTML = await $.get(`${extensionFolderPath}/regex_row.html`);
+  const extensionButtonHTML = await $.get(`${extensionFolderPath}/extension_button.html`);
+
+  // Append the extension button to the menu
+  $("#avatar_controls > div").append(extensionButtonHTML);
 
   // Append the HTML to the appropriate places in the DOM
-  $("#personality_div").before(regexRowHTML);
+  $("#form_sheld").before(regexRowHTML);
 
   // Listening for events
+  $("#extension_button").on("click", changeExtensionView);
   $("#regex-replace-button").on("click", onReplaceButtonClick);
   $("#method-setting").on("input", onMethodInput);
   $("#field-setting").on("change", onFieldSelect);
