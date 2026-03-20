@@ -118,7 +118,7 @@ jQuery(async () => {
   const extensionButtonHTML = await $.get(`${extensionFolderPath}/extension_button.html`);
 
   // Append the extension button to the menu
-  $("#avatar_controls > div").append(extensionButtonHTML);
+  $("#avatar_controls > div").children().last().before(extensionButtonHTML);
 
   // Append the HTML to the appropriate places in the DOM
   $("#form_sheld").before(regexRowHTML);
