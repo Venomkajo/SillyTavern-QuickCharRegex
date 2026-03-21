@@ -90,6 +90,9 @@ function onReplaceButtonClick() {
 } else if (method === "whole-words") {
     const regex = new RegExp(`(?<!\\w)${escapeRegExp(pattern)}(?!\\w)`,"g");
     field = field.replace(regex, replacement);
+} else if (method === "combined-words") {
+    const regex = new RegExp(`(?<=\\w)${escapeRegExp(pattern)}|${escapeRegExp(pattern)}(?=\\w)`,"g");
+    field = field.replace(regex, replacement);
 }
 
   // Update the character's field chosen in the settings
