@@ -1,13 +1,33 @@
-#regex-replace-button, #undo-button {
-    width: 100px;
-    padding: 5px;
-    margin-top: 10px;
-}
-
-.quick-char-regex-row {
-    margin-top: 15px;
-}
-
 .quick-char-regex-select-block {
     margin-top: 15px;
+}
+
+.quick-char-regex-checkbox-block {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.quick-char-regex-pattern-input, .quick-char-regex-replacement-input {
+    margin-left: 8px;
+    width: 80%;
+}
+
+.quick-char-regex-undo-button, .quick-char-regex-replace-button {
+    margin-left: 8px;
+    width: 40%;
+}
+
+.quick-char-regex-button-div {
+    width: 100%;
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.quick-char-regex-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
