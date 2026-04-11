@@ -11,7 +11,7 @@
     * **Whole Words:** Replaces only exact word matches.
     * **Combined Words:** Targets patterns that are adjacent to other word characters.
 * **Safety First:** Built-in **Undo** button for every field to immediately revert the last change.
-* **Universal Application:** Works across all character-related text fields (Description, Personality, Scenario, etc.).
+* **Universal Application:** Works across all text fields (Description, Personality, Prompts, Alternate Greetings, Persona Description etc.).
 
 ---
 
@@ -27,9 +27,10 @@
 ## Usage
 
 ### Getting Started
-1. Open the **Character Menu** in SillyTavern.
-2. Click the **Quick Regex** button (**RE**) in the avatar controls to open the settings menu.
-3. Toggle the **Extension Active** checkbox to enable the tool.
+1. Click the **Quick Char Regex** button in the extensions menu to open the settings menu. (Magic wand left to the main input box)
+2. Toggle the **Extension Active** checkbox to enable the tool.
+3. Choose your desired replacement method from the dropdown.
+4. Change other settings and use buttons as needed.
 
 ### Performing a Replacement
 Once activated, simply click inside any text field (like the character's Description). A small control panel will appear below the box:

@@ -23,7 +23,6 @@ async function loadSettings() {
 
   // Updating settings in the UI
   $("#quick-char-regex-method-setting").val(extension_settings[extensionName].method).trigger("input");
-  $("#quick-char-regex-field-setting").val(extension_settings[extensionName].field).trigger("input");
   $("#quick-char-regex-extension-active-checkbox").prop("checked", extension_settings[extensionName].extensionActive);
 }
 
@@ -41,8 +40,7 @@ function onExtensionToggle() {
     toastr.success("Quick Regex extension activated!");
   } else {
     toastr.success("Quick Regex extension deactivated!");
-    document.querySelectorAll('.quick-char-regex-container').forEach(container => container.remove());
-    document.querySelectorAll('textarea').forEach(textarea => delete textarea.dataset.quickRegexAdded);
+    cleanReplaceDivs();
   }
 
   saveSettingsDebounced();
@@ -57,6 +55,10 @@ function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function cleanReplaceDivs() {
+  document.querySelectorAll('.quick-char-regex-container').forEach(container => container.remove());
+  document.querySelectorAll('textarea').forEach(textarea => delete textarea.dataset.quickRegexAdded);
+}
 
 function onUndoButtonClick(event) {
   event.preventDefault();
@@ -92,25 +94,25 @@ function onReplaceButtonClick(event) {
   const replacement = $("#quick-char-regex-replacement-input_" + fieldID).val();
   const method = extension_settings[extensionName].method;
 
-  let field_content = $(`#` + fieldID).val();
+  let fieldContent = $(`#` + fieldID).val();
 
-  $("#quick-char-regex-undo-button_" + fieldID)[0].dataset.undoContent = field_content;
+  $("#quick-char-regex-undo-button_" + fieldID)[0].dataset.undoContent = fieldContent;
 
   if (method === "regex") {
     const regex = new RegExp(pattern, "g");
-    field_content = field_content.replace(regex, replacement);
+    fieldContent = fieldContent.replace(regex, replacement);
   } else if (method === "simple") {
     const regex = new RegExp(escapeRegExp(pattern), "g");
-    field_content = field_content.replace(regex, replacement);
+    fieldContent = fieldContent.replace(regex, replacement);
   } else if (method === "whole-words") {
     const regex = new RegExp(`(?<!\\w)${escapeRegExp(pattern)}(?!\\w)`, "g");
-    field_content = field_content.replace(regex, replacement);
+    fieldContent = fieldContent.replace(regex, replacement);
   } else if (method === "combined-words") {
     const regex = new RegExp(`(?<=\\w)${escapeRegExp(pattern)}|${escapeRegExp(pattern)}(?=\\w)`, "g");
-    field_content = field_content.replace(regex, replacement);
+    fieldContent = fieldContent.replace(regex, replacement);
   }
 
-  $(`#` + fieldID).val(field_content);
+  $(`#` + fieldID).val(fieldContent);
 
   // simulate input event to trigger save
   const inputEvent = new Event('input', { bubbles: true });
@@ -122,7 +124,7 @@ function onReplaceButtonClick(event) {
 
   $("#quick-char-regex-undo-button_" + fieldID).prop("disabled", false);
 
-  console.log("Replacement successful! Updated content:", field_content);
+  console.log("Replacement successful! Updated content:", fieldContent);
   toastr.success("Replacement complete!", "Your character has been updated.");
 
 } catch (error) {
@@ -205,15 +207,22 @@ jQuery(async () => {
   const extensionButtonHTML = await $.get(`${extensionFolderPath}/extension_button.html`);
 
   // Append the extension button to the menu
-  $("#avatar_controls > div").children().last().before(extensionButtonHTML);
+  $("#extensionsMenu").append(extensionButtonHTML);
 
   // Append the HTML to the appropriate places in the DOM
   $("#form_sheld").before(regexRowHTML);
 
   // Listening for events
   $("#quick-char-regex-extension-button").on("click", changeExtensionView);
+
   $("#quick-char-regex-extension-active-checkbox").on("change", onExtensionToggle);
   $("#quick-char-regex-method-setting").on("input", onMethodSelect);
+
+  $("#quick-char-regex-clean-button").on("click", cleanReplaceDivs);
+
+  $("#quick-char-regex-add-to-all-button").on("click", () => {
+    document.querySelectorAll('textarea').forEach(textarea => addReplaceDiv(textarea));
+  });
 
   document.addEventListener('focusin', (e) => {
   if (e.target.tagName === 'TEXTAREA') {
