@@ -9,7 +9,7 @@ const extensionName = "SillyTavern-QuickCharRegex";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 // Define default settings for your extension
 const extensionSettings = extension_settings[extensionName];
-const defaultSettings = { method: "simple", extensionActive: false };
+const defaultSettings = { method: "simple", extensionActive: false, onlyMainChat: false };
 
 const FORBIDDEN_FIELDS = ["send_textarea", "world_info_search", "settingsSearch"]
 
@@ -24,6 +24,7 @@ async function loadSettings() {
   // Updating settings in the UI
   $("#quick-char-regex-method-setting").val(extension_settings[extensionName].method).trigger("input");
   $("#quick-char-regex-extension-active-checkbox").prop("checked", extension_settings[extensionName].extensionActive);
+  $("#quick-char-regex-only-main-chat-checkbox").prop("checked", extension_settings[extensionName].onlyMainChat);
 }
 
 // These functions are called when the extension settings are changed in the UI
@@ -45,6 +46,13 @@ function onExtensionToggle() {
 
   saveSettingsDebounced();
 }
+
+function onOnlyMainChatToggle() {
+  extension_settings[extensionName].onlyMainChat = !extension_settings[extensionName].onlyMainChat;
+  cleanReplaceDivs();
+  saveSettingsDebounced();
+}
+
 
 function changeExtensionView() {
   $("#quick-char-regex-menu").toggle();
@@ -136,6 +144,7 @@ function addReplaceDiv(textarea) {
   const invalidDiv = 
     textarea.dataset.quickRegexAdded ||
     !extension_settings[extensionName].extensionActive ||
+    (extension_settings[extensionName].onlyMainChat && textarea.id !== "curEditTextarea") ||
     FORBIDDEN_FIELDS.includes(textarea.id) ||
     !textarea.id;
 
@@ -216,6 +225,7 @@ jQuery(async () => {
   $("#quick-char-regex-extension-button").on("click", changeExtensionView);
 
   $("#quick-char-regex-extension-active-checkbox").on("change", onExtensionToggle);
+  $("#quick-char-regex-only-main-chat-checkbox").on("change", onOnlyMainChatToggle);
   $("#quick-char-regex-method-setting").on("input", onMethodSelect);
 
   $("#quick-char-regex-clean-button").on("click", cleanReplaceDivs);
