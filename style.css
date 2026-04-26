@@ -1,3 +1,5 @@
+/* Quick Char Regex Extension Styles */
+
 .quick-char-regex-select-block {
     margin-top: 15px;
 }
@@ -41,4 +43,13 @@
 .quick-char-regex-action-button {
     padding: 5px 10px;
     font-size: 14px;
+}
+
+/* Modal Styles */
+
+.quick-char-regex-modal-content {
+    padding: 20px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
 }

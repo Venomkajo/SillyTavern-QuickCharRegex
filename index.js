@@ -4,6 +4,10 @@ import { extension_settings, getContext, loadExtensionSettings } from "../../../
 // Importing debounced save functions to save data immediately
 import { saveSettingsDebounced, saveCharacterDebounced } from "../../../../script.js";
 
+// Importing custom functions
+import { openPresetModal } from "./preset_modal.js";
+import { createQuickCharRegexContainer } from "./regex_container.js";
+
 // Keep track of where your extension is located, name should match repo name
 const extensionName = "SillyTavern-QuickCharRegex";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
@@ -159,59 +163,16 @@ function addReplaceDiv(textarea) {
     return;
   }
 
-  const quickCharRegexContainer = document.createElement('div');
-  quickCharRegexContainer.className = 'quick-char-regex-container';
-  quickCharRegexContainer.id = `quick-char-regex-container_${textarea.id}`;
+  const quickCharRegexContainer = createQuickCharRegexContainer(textarea.id);
 
-  const undoButton = document.createElement('button');
-  undoButton.textContent = 'Undo';
-  undoButton.type = 'button';
-  undoButton.onclick = onUndoButtonClick;
-  undoButton.classList.add('menu_button');
-  undoButton.classList.add('quick-char-regex-undo-button');
+  textarea.insertAdjacentHTML('afterend', quickCharRegexContainer);
 
-  undoButton.id = `quick-char-regex-undo-button_${textarea.id}`;
-  undoButton.dataset.fieldId = textarea.id;
-  undoButton.dataset.undoContent = '';
-  undoButton.disabled = true;
+  const container = document.getElementById(
+      `quick-char-regex-container_${textarea.id}`
+  );
 
-  const replaceButton = document.createElement('button');
-  replaceButton.textContent = 'Replace';
-  replaceButton.type = 'button';
-  replaceButton.onclick = onReplaceButtonClick;
-  replaceButton.classList.add('menu_button');
-  replaceButton.classList.add('quick-char-regex-replace-button');
-
-  replaceButton.id = `quick-char-regex-replace-button_${textarea.id}`;
-  replaceButton.dataset.fieldId = textarea.id;
-
-  const patternInput = document.createElement('input');
-  patternInput.type = 'text';
-  patternInput.placeholder = 'Pattern';
-  patternInput.autocomplete = 'off';
-  patternInput.id = `quick-char-regex-pattern-input_${textarea.id}`;
-  patternInput.classList.add('text_pole');
-  patternInput.classList.add('quick-char-regex-pattern-input');
-
-  const replacementInput = document.createElement('input');
-  replacementInput.type = 'text';
-  replacementInput.placeholder = 'Replacement';
-  replacementInput.autocomplete = 'off';
-  replacementInput.id = `quick-char-regex-replacement-input_${textarea.id}`;
-  replacementInput.classList.add('text_pole');
-  replacementInput.classList.add('quick-char-regex-replacement-input');
-
-  const buttonDiv = document.createElement('div');
-  buttonDiv.className = 'quick-char-regex-button-div';
-
-  quickCharRegexContainer.appendChild(patternInput);
-  quickCharRegexContainer.appendChild(replacementInput);
-
-  buttonDiv.appendChild(replaceButton);
-  buttonDiv.appendChild(undoButton);
-  quickCharRegexContainer.appendChild(buttonDiv);
-
-  textarea.insertAdjacentElement('afterend', quickCharRegexContainer);
+  container.querySelector('.quick-char-regex-replace-button').addEventListener('click', onReplaceButtonClick);
+  container.querySelector('.quick-char-regex-undo-button').addEventListener('click', onUndoButtonClick);
 
   textarea.dataset.quickRegexAdded = 'true';
 }
@@ -236,6 +197,7 @@ jQuery(async () => {
   $("#quick-char-regex-method-setting").on("input", onMethodSelect);
 
   $("#quick-char-regex-clean-button").on("click", cleanReplaceDivs);
+  $("#quick-char-regex-preset-menu-button").on("click", openPresetModal);
 
   $("#quick-char-regex-add-to-all-button").on("click", () => {
     document.querySelectorAll('textarea').forEach(textarea => addReplaceDiv(textarea));
