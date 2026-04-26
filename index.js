@@ -9,7 +9,9 @@ const extensionName = "SillyTavern-QuickCharRegex";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 // Define default settings for your extension
 const extensionSettings = extension_settings[extensionName];
-const defaultSettings = { method: "simple", extensionActive: false, onlyMainChat: false };
+const defaultSettings = { method: "simple", extensionActive: false, onlyMainChat: false , savedPresets: []};
+
+// schema for saved presets: { name: string, method: string, pattern: string, replacement: string }
 
 const FORBIDDEN_FIELDS = ["send_textarea", "world_info_search", "settingsSearch"]
 
@@ -34,6 +36,7 @@ function onMethodSelect(event) {
   saveSettingsDebounced();
 }
 
+// This function is called when the extension toggle is changed in the UI
 function onExtensionToggle() {
   extension_settings[extensionName].extensionActive = !extension_settings[extensionName].extensionActive;
 
@@ -47,27 +50,30 @@ function onExtensionToggle() {
   saveSettingsDebounced();
 }
 
+// This function is called when the "Only Main Chat" toggle is changed in the UI
 function onOnlyMainChatToggle() {
   extension_settings[extensionName].onlyMainChat = !extension_settings[extensionName].onlyMainChat;
   cleanReplaceDivs();
   saveSettingsDebounced();
 }
 
-
+// This function is called when the extension button is clicked in the UI
 function changeExtensionView() {
   $("#quick-char-regex-menu").toggle();
 }
 
-
+// Utility function to escape special characters in a string for use in a regular expression
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// This function removes all the replace divs from the page and resets the data attribute on textareas
 function cleanReplaceDivs() {
   document.querySelectorAll('.quick-char-regex-container').forEach(container => container.remove());
   document.querySelectorAll('textarea').forEach(textarea => delete textarea.dataset.quickRegexAdded);
 }
 
+// This function is called when the "Undo" button is clicked
 function onUndoButtonClick(event) {
   event.preventDefault();
   event.stopPropagation();
@@ -140,6 +146,7 @@ function onReplaceButtonClick(event) {
   toastr.error("An error occurred while trying to perform the replacement. Please try again.", error);
 }}
 
+// This function adds the replace div with inputs and buttons after a textarea, if it meets the criteria
 function addReplaceDiv(textarea) {
   const invalidDiv = 
     textarea.dataset.quickRegexAdded ||
