@@ -3,14 +3,18 @@ function createSavedPresetsButton(savedPresets) {
         return '';
     }
 
-    return savedPresets.map(preset => `
-        <button class="quick-char-regex-saved-preset-button menu_button"
-                data-method="${preset.method}"
-                data-pattern="${preset.pattern}"
-                data-replacement="${preset.replacement}">
-            ${preset.name}
-        </button>
-    `).join('');
+    return savedPresets.map(preset => {
+        const button = document.createElement('button');
+        button.className = 'quick-char-regex-saved-preset-button menu_button';
+        
+        button.dataset.method = preset.method;
+        button.dataset.pattern = preset.pattern;
+        button.dataset.replacement = preset.replacement;
+        
+        button.textContent = preset.name;
+        
+        return button;
+    });
 }
 
 function createQuickCharRegexContainer(textareaId, savedPresets) { return (

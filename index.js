@@ -113,7 +113,7 @@ function onReplaceButtonClick(event, ...args ) {
 
     let pattern, replacement, method;
 
-    if (dataset && dataset.pattern && dataset.replacement && dataset.method) {
+    if (dataset && dataset.pattern !== undefined && dataset.replacement !== undefined && dataset.method !== undefined) {
       // Called from preset button with dataset containing method, pattern, replacement
       const dataset = args[0].dataset;
       pattern = dataset.pattern;

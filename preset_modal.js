@@ -32,27 +32,45 @@ function newPresetForm() { return (
     `)
 }
 
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+function escapeAttribute(value) {
+    return escapeHtml(value);
+}
+
 function populatePresets() {
     if (!extension_settings[extensionName].savedPresets || extension_settings[extensionName].savedPresets.length === 0) {
         return '<tr><td colspan="5">No presets saved.</td></tr>';
     }
-
-    return extension_settings[extensionName].savedPresets.map(preset => `
+    return extension_settings[extensionName].savedPresets.map(preset => {
+        const escapedName = escapeHtml(preset.name);
+        const escapedMethod = escapeHtml(preset.method);
+        const escapedPattern = escapeHtml(preset.pattern);
+        const escapedReplacement = escapeHtml(preset.replacement);
+        const escapedPresetNameAttribute = escapeAttribute(preset.name);
+        return `
         <tr class="quick-char-regex-modal-preset-row">
-            <td class="quick-char-regex-preset-name"><strong>${preset.name}</strong></td>
-            <td class="quick-char-regex-preset-method">${preset.method}</td>
-            <td class="quick-char-regex-preset-pattern"><code>${preset.pattern}</code></td>
-            <td class="quick-char-regex-preset-replacement"><code>${preset.replacement}</code></td>
+            <td class="quick-char-regex-preset-name"><strong>${escapedName}</strong></td>
+            <td class="quick-char-regex-preset-method">${escapedMethod}</td>
+            <td class="quick-char-regex-preset-pattern"><code>${escapedPattern}</code></td>
+            <td class="quick-char-regex-preset-replacement"><code>${escapedReplacement}</code></td>
             <td class="quick-char-regex-preset-actions">
-                <button class="quick-char-regex-modal-preset-edit-button menu_button" data-preset-name="${preset.name}">
+                <button class="quick-char-regex-modal-preset-edit-button menu_button" data-preset-name="${escapedPresetNameAttribute}">
                     Edit
                 </button>
-                <button class="quick-char-regex-modal-preset-remove-button menu_button" data-preset-name="${preset.name}">
+                <button class="quick-char-regex-modal-preset-remove-button menu_button" data-preset-name="${escapedPresetNameAttribute}">
                     Remove
                 </button>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function modalConstruction() { return (
@@ -126,8 +144,8 @@ function openPresetModal() {
             const replacement = newPresetElement.querySelector('.quick-char-regex-new-preset-replacement').value;
             const method = newPresetElement.querySelector('.quick-char-regex-new-preset-method').value;
 
-            if (!name || !pattern || !replacement || !method) {
-                alert('All fields are required.');
+            if (!name || !pattern || !method) {
+                alert('Name, pattern, and method are required.');
                 return;
             } else if (extension_settings[extensionName].savedPresets.some(preset => preset.name === name)) {
                 alert('Preset name must be unique.');
@@ -157,12 +175,13 @@ function openPresetModal() {
         modal.close();
         modal.remove();
     }
-    window.onclick = function(event) {
+
+    window.addEventListener('click', (event) => {
         if (event.target == modal) {
             modal.close();
             modal.remove();
         }
-    }
+    });
 }
 
 export { openPresetModal };

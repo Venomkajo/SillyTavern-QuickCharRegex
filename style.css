@@ -135,6 +135,6 @@
     white-space: nowrap;
 }
 
-.menu_button {
+.quick-char-regex-modal .menu_button, .quick-char-regex-container .menu_button, .quick-char-regex-settings .menu_button {
     white-space: nowrap;
 }
