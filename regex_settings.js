@@ -1,4 +1,14 @@
-<div class="quick-char-regex-settings" hidden id="quick-char-regex-menu">
+function createMethodOptions() {
+    return (`
+        <option value="regex">Regex Replace</option>
+        <option value="simple">Simple Replace</option>
+        <option value="whole-words">Whole Words Replace</option>
+        <option value="combined-words">Combined Words Replace (Whole Words Inverse)</option>
+    `);
+}
+
+function createRegexSettingsMenu() {
+    return (`<div class="quick-char-regex-settings" hidden id="quick-char-regex-menu">
     <div class="inline-drawer">
         <div class="inline-drawer-toggle inline-drawer-header">
             <b>Quick Char Regex</b>
@@ -8,10 +18,7 @@
                 <div class="quick-char-regex-select-block flex-container">
                     <label for="quick-char-regex-method-setting">Replacement Method</label>
                     <select id="quick-char-regex-method-setting" class="text_pole">
-                        <option value="regex">Regex Replace</option>
-                        <option value="simple">Simple Replace</option>
-                        <option value="whole-words">Whole Words Replace</option>
-                        <option value="combined-words">Combined Words Replace (Whole Words Inverse)</option>
+                        ${createMethodOptions()}
                     </select>
                 </div>
                 <div class="quick-char-regex-checkbox-block flex-container">
@@ -26,7 +33,13 @@
                     <button id="quick-char-regex-clean-button" class="quick-char-regex-action-button menu_button">Clean the interface</button>
                     <button id="quick-char-regex-add-to-all-button" class="quick-char-regex-action-button menu_button">Add to all text areas</button>
                 </div>
+                <div class="quick-char-regex-action-button-block flex-container">
+                    <button id="quick-char-regex-preset-menu-button" class="quick-char-regex-action-button menu_button">Open preset menu</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</div>`);
+}
+
+export { createRegexSettingsMenu, createMethodOptions };

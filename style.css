@@ -1,3 +1,5 @@
+/* Quick Char Regex Extension Styles */
+
 .quick-char-regex-select-block {
     margin-top: 15px;
 }
@@ -15,6 +17,10 @@
 .quick-char-regex-undo-button, .quick-char-regex-replace-button {
     margin-left: 8px;
     width: 40%;
+}
+
+.quick-char-regex-saved-presets-container {
+    margin-left: 8px;
 }
 
 .quick-char-regex-button-div {
@@ -41,4 +47,94 @@
 .quick-char-regex-action-button {
     padding: 5px 10px;
     font-size: 14px;
+}
+
+/* Modal Styles */
+
+.quick-char-regex-modal-content {
+    padding: 20px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container and Modal Base */
+.quick-char-regex-modal.popup {
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    max-width: 800px;
+    width: 90%;
+}
+
+.quick-char-regex-modal-body.popup-body {
+    padding: 20px;
+}
+
+.quick-char-regex-modal-content.popup-content h2 {
+    margin-top: 0;
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+}
+
+/* Preset Table Layout */
+.quick-char-regex-modal-preset-container {
+    margin: 20px 0;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+
+.quick-char-regex-modal-preset-container table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.quick-char-regex-modal-preset-row {
+    border-bottom: 1px solid #333;
+    transition: background 0.2s ease;
+}
+
+.quick-char-regex-modal-preset-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.quick-char-regex-modal-preset-row td {
+    padding: 12px 8px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Specific Column Styling */
+.quick-char-regex-preset-name {
+    color: #00adff;
+    font-weight: bold;
+}
+
+.quick-char-regex-preset-pattern code {
+    background: #000;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    color: #ffca28;
+}
+
+.quick-char-regex-preset-method {
+    font-size: 0.85em;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+/* Action Buttons Area */
+.quick-char-regex-preset-actions {
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.menu_button {
+    white-space: nowrap;
 }

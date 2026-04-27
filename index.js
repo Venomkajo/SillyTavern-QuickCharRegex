@@ -4,14 +4,21 @@ import { extension_settings, getContext, loadExtensionSettings } from "../../../
 // Importing debounced save functions to save data immediately
 import { saveSettingsDebounced, saveCharacterDebounced } from "../../../../script.js";
 
+// Importing custom functions
+import { openPresetModal } from "./preset_modal.js";
+import { createQuickCharRegexContainer } from "./regex_container.js";
+import { createRegexSettingsMenu } from "./regex_settings.js";
+import { createExtensionButton } from "./extension_button.js";
+
 // Keep track of where your extension is located, name should match repo name
 const extensionName = "SillyTavern-QuickCharRegex";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
+
 // Define default settings for your extension
 const extensionSettings = extension_settings[extensionName];
 const defaultSettings = { method: "simple", extensionActive: false, onlyMainChat: false , savedPresets: []};
 
-// schema for saved presets: { name: string, method: string, pattern: string, replacement: string }
+// schema for saved presets: { name: unique string, method: string (only allowed options), pattern: string, replacement: string }
 
 const FORBIDDEN_FIELDS = ["send_textarea", "world_info_search", "settingsSearch"]
 
@@ -19,9 +26,8 @@ const FORBIDDEN_FIELDS = ["send_textarea", "world_info_search", "settingsSearch"
 async function loadSettings() {
   //Create the settings if they don't exist
   extension_settings[extensionName] = extension_settings[extensionName] || {};
-  if (Object.keys(extension_settings[extensionName]).length === 0) {
-    Object.assign(extension_settings[extensionName], defaultSettings);
-  }
+
+  extension_settings[extensionName] = { ...defaultSettings, ...extension_settings[extensionName] };
 
   // Updating settings in the UI
   $("#quick-char-regex-method-setting").val(extension_settings[extensionName].method).trigger("input");
@@ -97,53 +103,67 @@ function onUndoButtonClick(event) {
 }}
 
 // This function is called when the "Replace" button is clicked
-function onReplaceButtonClick(event) {
+function onReplaceButtonClick(event, ...args ) {
   event.preventDefault();
   event.stopPropagation();
 
   try {
-  const fieldID = this.dataset.fieldId;
+    const fieldID = this.dataset.fieldId;
+    const dataset = args[0]?.dataset;
 
-  const pattern = $("#quick-char-regex-pattern-input_" + fieldID).val();
-  const replacement = $("#quick-char-regex-replacement-input_" + fieldID).val();
-  const method = extension_settings[extensionName].method;
+    let pattern, replacement, method;
 
-  let fieldContent = $(`#` + fieldID).val();
+    if (dataset && dataset.pattern && dataset.replacement && dataset.method) {
+      // Called from preset button with dataset containing method, pattern, replacement
+      const dataset = args[0].dataset;
+      pattern = dataset.pattern;
+      replacement = dataset.replacement;
+      method = dataset.method;
 
-  $("#quick-char-regex-undo-button_" + fieldID)[0].dataset.undoContent = fieldContent;
+    } else {
 
-  if (method === "regex") {
-    const regex = new RegExp(pattern, "g");
-    fieldContent = fieldContent.replace(regex, replacement);
-  } else if (method === "simple") {
-    const regex = new RegExp(escapeRegExp(pattern), "g");
-    fieldContent = fieldContent.replace(regex, replacement);
-  } else if (method === "whole-words") {
-    const regex = new RegExp(`(?<!\\w)${escapeRegExp(pattern)}(?!\\w)`, "g");
-    fieldContent = fieldContent.replace(regex, replacement);
-  } else if (method === "combined-words") {
-    const regex = new RegExp(`(?<=\\w)${escapeRegExp(pattern)}|${escapeRegExp(pattern)}(?=\\w)`, "g");
-    fieldContent = fieldContent.replace(regex, replacement);
-  }
+      pattern = $("#quick-char-regex-pattern-input_" + fieldID).val();
+      replacement = $("#quick-char-regex-replacement-input_" + fieldID).val();
+      method = extension_settings[extensionName].method;
+    }
 
-  $(`#` + fieldID).val(fieldContent);
 
-  // simulate input event to trigger save
-  const inputEvent = new Event('input', { bubbles: true });
-  $(`#` + fieldID)[0].dispatchEvent(inputEvent);
-  const changeEvent = new Event('change', { bubbles: true });
-  $(`#` + fieldID)[0].dispatchEvent(changeEvent);
+    let fieldContent = $(`#` + fieldID).val();
 
-  saveCharacterDebounced();
+    $("#quick-char-regex-undo-button_" + fieldID)[0].dataset.undoContent = fieldContent;
 
-  $("#quick-char-regex-undo-button_" + fieldID).prop("disabled", false);
+    if (method === "regex") {
+      const regex = new RegExp(pattern, "g");
+      fieldContent = fieldContent.replace(regex, replacement);
+    } else if (method === "simple") {
+      const regex = new RegExp(escapeRegExp(pattern), "g");
+      fieldContent = fieldContent.replace(regex, replacement);
+    } else if (method === "whole-words") {
+      const regex = new RegExp(`(?<!\\w)${escapeRegExp(pattern)}(?!\\w)`, "g");
+      fieldContent = fieldContent.replace(regex, replacement);
+    } else if (method === "combined-words") {
+      const regex = new RegExp(`(?<=\\w)${escapeRegExp(pattern)}|${escapeRegExp(pattern)}(?=\\w)`, "g");
+      fieldContent = fieldContent.replace(regex, replacement);
+    }
 
-  console.log("Replacement successful! Updated content:", fieldContent);
-  toastr.success("Replacement complete!", "Your character has been updated.");
+    $(`#` + fieldID).val(fieldContent);
+
+    // simulate input event to trigger save
+    const inputEvent = new Event('input', { bubbles: true });
+    $(`#` + fieldID)[0].dispatchEvent(inputEvent);
+    const changeEvent = new Event('change', { bubbles: true });
+    $(`#` + fieldID)[0].dispatchEvent(changeEvent);
+
+    saveCharacterDebounced();
+
+    $("#quick-char-regex-undo-button_" + fieldID).prop("disabled", false);
+
+    console.log("Replacement successful! Updated content:", fieldContent);
+    toastr.success("Replacement complete!", "Your character has been updated.");
 
 } catch (error) {
-  console.error("Error during QuickCharRegex replace operation:", error);
-  toastr.error("An error occurred while trying to perform the replacement. Please try again.", error);
+    console.error("Error during QuickCharRegex replace operation:", error);
+    toastr.error("An error occurred while trying to perform the replacement. Please try again.", error);
 }}
 
 // This function adds the replace div with inputs and buttons after a textarea, if it meets the criteria
@@ -159,59 +179,23 @@ function addReplaceDiv(textarea) {
     return;
   }
 
-  const quickCharRegexContainer = document.createElement('div');
-  quickCharRegexContainer.className = 'quick-char-regex-container';
-  quickCharRegexContainer.id = `quick-char-regex-container_${textarea.id}`;
+  const quickCharRegexContainer = createQuickCharRegexContainer(textarea.id, extension_settings[extensionName].savedPresets);
 
-  const undoButton = document.createElement('button');
-  undoButton.textContent = 'Undo';
-  undoButton.type = 'button';
-  undoButton.onclick = onUndoButtonClick;
-  undoButton.classList.add('menu_button');
-  undoButton.classList.add('quick-char-regex-undo-button');
+  textarea.insertAdjacentHTML('afterend', quickCharRegexContainer);
 
-  undoButton.id = `quick-char-regex-undo-button_${textarea.id}`;
-  undoButton.dataset.fieldId = textarea.id;
-  undoButton.dataset.undoContent = '';
-  undoButton.disabled = true;
+  const container = document.getElementById(
+      `quick-char-regex-container_${textarea.id}`
+  );
 
-  const replaceButton = document.createElement('button');
-  replaceButton.textContent = 'Replace';
-  replaceButton.type = 'button';
-  replaceButton.onclick = onReplaceButtonClick;
-  replaceButton.classList.add('menu_button');
-  replaceButton.classList.add('quick-char-regex-replace-button');
+  container.querySelector('.quick-char-regex-replace-button').addEventListener('click', onReplaceButtonClick);
+  container.querySelector('.quick-char-regex-undo-button').addEventListener('click', onUndoButtonClick);
+  container.querySelectorAll('.quick-char-regex-saved-preset-button').forEach(button => {
+    button.dataset.fieldId = textarea.id;
 
-  replaceButton.id = `quick-char-regex-replace-button_${textarea.id}`;
-  replaceButton.dataset.fieldId = textarea.id;
-
-  const patternInput = document.createElement('input');
-  patternInput.type = 'text';
-  patternInput.placeholder = 'Pattern';
-  patternInput.autocomplete = 'off';
-  patternInput.id = `quick-char-regex-pattern-input_${textarea.id}`;
-  patternInput.classList.add('text_pole');
-  patternInput.classList.add('quick-char-regex-pattern-input');
-
-  const replacementInput = document.createElement('input');
-  replacementInput.type = 'text';
-  replacementInput.placeholder = 'Replacement';
-  replacementInput.autocomplete = 'off';
-  replacementInput.id = `quick-char-regex-replacement-input_${textarea.id}`;
-  replacementInput.classList.add('text_pole');
-  replacementInput.classList.add('quick-char-regex-replacement-input');
-
-  const buttonDiv = document.createElement('div');
-  buttonDiv.className = 'quick-char-regex-button-div';
-
-  quickCharRegexContainer.appendChild(patternInput);
-  quickCharRegexContainer.appendChild(replacementInput);
-
-  buttonDiv.appendChild(replaceButton);
-  buttonDiv.appendChild(undoButton);
-  quickCharRegexContainer.appendChild(buttonDiv);
-
-  textarea.insertAdjacentElement('afterend', quickCharRegexContainer);
+    button.addEventListener('click', function(event) {
+      onReplaceButtonClick.call(this, event, this);
+    })
+  });
 
   textarea.dataset.quickRegexAdded = 'true';
 }
@@ -219,8 +203,8 @@ function addReplaceDiv(textarea) {
 // This function is called when the extension is loaded
 jQuery(async () => {
   // Loading HTML from a file
-  const regexRowHTML = await $.get(`${extensionFolderPath}/regex_settings.html`);
-  const extensionButtonHTML = await $.get(`${extensionFolderPath}/extension_button.html`);
+  const regexRowHTML = createRegexSettingsMenu();
+  const extensionButtonHTML = createExtensionButton();
 
   // Append the extension button to the menu
   $("#extensionsMenu").append(extensionButtonHTML);
@@ -236,6 +220,7 @@ jQuery(async () => {
   $("#quick-char-regex-method-setting").on("input", onMethodSelect);
 
   $("#quick-char-regex-clean-button").on("click", cleanReplaceDivs);
+  $("#quick-char-regex-preset-menu-button").on("click", openPresetModal);
 
   $("#quick-char-regex-add-to-all-button").on("click", () => {
     document.querySelectorAll('textarea').forEach(textarea => addReplaceDiv(textarea));

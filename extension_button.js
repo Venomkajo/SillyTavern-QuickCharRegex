@@ -1,0 +1,10 @@
+function createExtensionButton() {
+    return (`
+        <div id="quick-char-regex-extension-button" class="list-group-item flex-container flexGap5 interactable" title="Open Quick Char Regex Settings" data-i18n="[title]Open Quick Char Regex Settings" tabindex="0">
+            <i class="fa-solid fa-search"></i>
+            <span>Quick Char Regex</span>
+        </div>
+    `);
+}
+
+export { createExtensionButton };
