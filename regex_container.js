@@ -1,4 +1,19 @@
-function createQuickCharRegexContainer(textareaId) { return (
+function createSavedPresetsButton(savedPresets) {
+    if (!savedPresets || savedPresets.length === 0) {
+        return '';
+    }
+
+    return savedPresets.map(preset => `
+        <button class="quick-char-regex-saved-preset-button menu_button"
+                data-method="${preset.method}"
+                data-pattern="${preset.pattern}"
+                data-replacement="${preset.replacement}">
+            ${preset.name}
+        </button>
+    `).join('');
+}
+
+function createQuickCharRegexContainer(textareaId, savedPresets) { return (
     `
     <div class="quick-char-regex-container"
         id="quick-char-regex-container_${textareaId}">
@@ -30,6 +45,10 @@ function createQuickCharRegexContainer(textareaId) { return (
                     disabled>
                 Undo
             </button>
+        </div>
+
+        <div class="quick-char-regex-saved-presets-container">
+            ${createSavedPresetsButton(savedPresets)}
         </div>
     </div>
     `)

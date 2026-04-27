@@ -7,6 +7,7 @@ import { saveSettingsDebounced, saveCharacterDebounced } from "../../../../scrip
 // Importing custom functions
 import { openPresetModal } from "./preset_modal.js";
 import { createQuickCharRegexContainer } from "./regex_container.js";
+import { createRegexSettingsMenu } from "./regex_settings.js";
 
 // Keep track of where your extension is located, name should match repo name
 const extensionName = "SillyTavern-QuickCharRegex";
@@ -23,9 +24,8 @@ const FORBIDDEN_FIELDS = ["send_textarea", "world_info_search", "settingsSearch"
 async function loadSettings() {
   //Create the settings if they don't exist
   extension_settings[extensionName] = extension_settings[extensionName] || {};
-  if (Object.keys(extension_settings[extensionName]).length === 0) {
-    Object.assign(extension_settings[extensionName], defaultSettings);
-  }
+
+  extension_settings[extensionName] = { ...defaultSettings, ...extension_settings[extensionName] };
 
   // Updating settings in the UI
   $("#quick-char-regex-method-setting").val(extension_settings[extensionName].method).trigger("input");
@@ -163,7 +163,7 @@ function addReplaceDiv(textarea) {
     return;
   }
 
-  const quickCharRegexContainer = createQuickCharRegexContainer(textarea.id);
+  const quickCharRegexContainer = createQuickCharRegexContainer(textarea.id, extension_settings[extensionName].savedPresets);
 
   textarea.insertAdjacentHTML('afterend', quickCharRegexContainer);
 
@@ -180,7 +180,7 @@ function addReplaceDiv(textarea) {
 // This function is called when the extension is loaded
 jQuery(async () => {
   // Loading HTML from a file
-  const regexRowHTML = await $.get(`${extensionFolderPath}/regex_settings.html`);
+  const regexRowHTML = createRegexSettingsMenu();
   const extensionButtonHTML = await $.get(`${extensionFolderPath}/extension_button.html`);
 
   // Append the extension button to the menu
