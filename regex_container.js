@@ -15,9 +15,7 @@ function createSavedPresetsButton(savedPresets) {
 
 function createQuickCharRegexContainer(textareaId, savedPresets) { return (
     `
-    <div class="quick-char-regex-container"
-        id="quick-char-regex-container_${textareaId}">
-
+    <div class="quick-char-regex-container" id="quick-char-regex-container_${textareaId}">
         <input type="text"
             placeholder="Pattern"
             autocomplete="off"
@@ -47,7 +45,8 @@ function createQuickCharRegexContainer(textareaId, savedPresets) { return (
             </button>
         </div>
 
-        <div class="quick-char-regex-saved-presets-container">
+        <div class="quick-char-regex-saved-presets-container" id="quick-char-regex-saved-presets_${textareaId}">
+            <p>Saved Presets:</p>
             ${createSavedPresetsButton(savedPresets)}
         </div>
     </div>

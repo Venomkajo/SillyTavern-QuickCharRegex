@@ -7,6 +7,17 @@ const extensionName = "SillyTavern-QuickCharRegex";
 
 let formState = false; // false for closed, true for open
 
+function removePreset() {
+    const presetName = this.dataset.presetName;
+    extension_settings[extensionName].savedPresets = extension_settings[extensionName].savedPresets.filter(preset => preset.name !== presetName);
+    saveSettingsDebounced();
+    openPresetModal();
+}
+
+function editPreset() {
+    return;
+}
+
 function newPresetForm() { return (
     `
     <div class="quick-char-regex-new-preset-form">
@@ -23,18 +34,24 @@ function newPresetForm() { return (
 
 function populatePresets() {
     if (!extension_settings[extensionName].savedPresets || extension_settings[extensionName].savedPresets.length === 0) {
-        return '<p>No presets saved.</p>';
+        return '<tr><td colspan="5">No presets saved.</td></tr>';
     }
 
     return extension_settings[extensionName].savedPresets.map(preset => `
-        <div class="quick-char-regex-modal-preset">
-            <span class="quick-char-regex-modal-preset-name">${preset.name}</span>
-            <span class="quick-char-regex-modal-preset-method">${preset.method}</span> 
-            <span class="quick-char-regex-modal-preset-pattern">${preset.pattern}</span>
-            <span class="quick-char-regex-modal-preset-replacement">${preset.replacement}</span>
-            <button class="quick-char-regex-modal-preset-remove-button" data-preset-name="${preset.name}">Remove</button>
-            <button class="quick-char-regex-modal-preset-edit-button" data-preset-name="${preset.name}">Edit</button>
-        </div>
+        <tr class="quick-char-regex-modal-preset-row">
+            <td class="quick-char-regex-preset-name"><strong>${preset.name}</strong></td>
+            <td class="quick-char-regex-preset-method">${preset.method}</td>
+            <td class="quick-char-regex-preset-pattern"><code>${preset.pattern}</code></td>
+            <td class="quick-char-regex-preset-replacement"><code>${preset.replacement}</code></td>
+            <td class="quick-char-regex-preset-actions">
+                <button class="quick-char-regex-modal-preset-edit-button menu_button" data-preset-name="${preset.name}">
+                    Edit
+                </button>
+                <button class="quick-char-regex-modal-preset-remove-button menu_button" data-preset-name="${preset.name}">
+                    Remove
+                </button>
+            </td>
+        </tr>
     `).join('');
 }
 
@@ -48,7 +65,20 @@ function modalConstruction() { return (
                     <button class="quick-char-regex-preset-add-button popup-button-ok menu_button">ADD</button>
                 </div>
                 <div class="quick-char-regex-modal-preset-container">
-                    ${populatePresets()}
+                <table class="quick-char-regex-preset-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Method</th>
+                            <th>Pattern</th>
+                            <th>Replacement</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${populatePresets()}
+                    </tbody>
+                </table>
                 </div>
                 <div class="popup-controls">
                     <button class="popup-button-cancel menu_button">Close</button>
@@ -110,6 +140,16 @@ function openPresetModal() {
             }
         }
     }
+
+    const removeButtons = modal.querySelectorAll('.quick-char-regex-modal-preset-remove-button');
+    removeButtons.forEach(button => {
+        button.onclick = removePreset;
+    });
+
+    const editButtons = modal.querySelectorAll('.quick-char-regex-modal-preset-edit-button');
+    editButtons.forEach(button => {
+        button.onclick = editPreset;
+    });
 
     const closeButton = modal.querySelector('.popup-button-cancel');
 
