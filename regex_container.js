@@ -3,18 +3,24 @@ function createSavedPresetsButton(savedPresets) {
         return '';
     }
 
-    return savedPresets.map(preset => {
+    // Create a temporary container in memory
+    const container = document.createElement('div');
+
+    savedPresets.forEach(preset => {
         const button = document.createElement('button');
         button.className = 'quick-char-regex-saved-preset-button menu_button';
         
+        // Browser handles encoding automatically for attributes and text
         button.dataset.method = preset.method;
         button.dataset.pattern = preset.pattern;
         button.dataset.replacement = preset.replacement;
-        
-        button.textContent = preset.name;
-        
-        return button;
+        button.textContent = preset.name; 
+
+        container.appendChild(button);
     });
+
+    // Return the combined HTML as a string to fit your template literal
+    return container.innerHTML;
 }
 
 function createQuickCharRegexContainer(textareaId, savedPresets) { return (
