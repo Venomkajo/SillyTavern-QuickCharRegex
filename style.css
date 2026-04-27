@@ -108,7 +108,20 @@
     vertical-align: middle;
 }
 
-/* Specific Column Styling */
+
+.quick-char-regex-new-preset-form {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.quick-char-regex-new-preset-form input {
+    width: 80%;
+}
+
 .quick-char-regex-preset-name {
     color: #00adff;
     font-weight: bold;
@@ -128,11 +141,17 @@
     opacity: 0.8;
 }
 
-/* Action Buttons Area */
 .quick-char-regex-preset-actions {
     display: flex;
     gap: 8px;
     white-space: nowrap;
+}
+
+.quick-char-regex-saved-presets-list {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    margin-top: 5px;
 }
 
 .quick-char-regex-modal .menu_button, .quick-char-regex-container .menu_button, .quick-char-regex-settings .menu_button {

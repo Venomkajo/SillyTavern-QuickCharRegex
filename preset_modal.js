@@ -21,9 +21,9 @@ function editPreset() {
 function newPresetForm() { return (
     `
     <div class="quick-char-regex-new-preset-form">
-        <input type="text" placeholder="Preset Name" class="text_pole quick-char-regex-new-preset-name" />
-        <input type="text" placeholder="Pattern" class="text_pole quick-char-regex-new-preset-pattern" />
-        <input type="text" placeholder="Replacement" class="text_pole quick-char-regex-new-preset-replacement" />
+        <input type="text" placeholder="Preset Name (must be unique)" class="text_pole quick-char-regex-new-preset-name" />
+        <input type="text" placeholder="Pattern (what will be replaced)" class="text_pole quick-char-regex-new-preset-pattern" />
+        <input type="text" placeholder="Replacement (what it will be replaced with)" class="text_pole quick-char-regex-new-preset-replacement" />
         <select class="quick-char-regex-new-preset-method">
             ${createMethodOptions()}
         </select>

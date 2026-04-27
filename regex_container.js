@@ -57,7 +57,9 @@ function createQuickCharRegexContainer(textareaId, savedPresets) { return (
 
         <div class="quick-char-regex-saved-presets-container" id="quick-char-regex-saved-presets_${textareaId}">
             <p>Saved Presets:</p>
-            ${createSavedPresetsButton(savedPresets)}
+            <div class="quick-char-regex-saved-presets-list" id="quick-char-regex-saved-presets-list_${textareaId}">
+                ${createSavedPresetsButton(savedPresets)}
+            </div>
         </div>
     </div>
     `)
