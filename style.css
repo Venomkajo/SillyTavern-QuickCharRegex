@@ -134,3 +134,7 @@
     gap: 8px;
     white-space: nowrap;
 }
+
+.menu_button {
+    white-space: nowrap;
+}
