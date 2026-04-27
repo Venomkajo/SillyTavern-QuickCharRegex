@@ -12,6 +12,7 @@
     * **Combined Words:** Targets patterns that are adjacent to other word characters.
 * **Safety First:** Built-in **Undo** button for every field to immediately revert the last change.
 * **Universal Application:** Works across all text fields (Description, Personality, Prompts, Alternate Greetings, Persona Description etc.).
+* **Presets:** Includes ability to save presets, allows for easy use of common replacements.
 
 ---
 
@@ -39,6 +40,10 @@ Once activated, simply click inside any text field (like the character's Descrip
 2. **Replacement:** Enter the text you want to swap in.
 3. **Replace Button:** Click this to apply the changes instantly.
 4. **Undo Button:** If you made a mistake, click "Undo" to restore the text to its state prior to the last replacement.
+
+### Presets
+In the extension setting menu you can create new presets, simply open the **preset menu** and follow provided buttons.
+Presets will show up at the standard control panel attached to the fields.
 
 ### Cleaning up the Interface
 Disabling the extension will automatically remove all the replacement controls from the character editing interface, leaving no trace behind.
