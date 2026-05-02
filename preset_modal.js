@@ -15,7 +15,40 @@ function removePreset() {
 }
 
 function editPreset() {
-    return;
+    const presetName = this.dataset.presetName;
+    const preset = extension_settings[extensionName].savedPresets.find(p => p.name === presetName);
+
+    const newName = prompt("Edit Preset Name:", preset.name);
+    if (!newName) {
+        alert("Preset name cannot be empty.");
+        return;
+    } else if (newName !== preset.name && extension_settings[extensionName].savedPresets.some(p => p.name === newName)) {
+        alert("Preset name must be unique.");
+        return;
+    }
+
+    const newPattern = prompt("Edit Pattern:", preset.pattern);
+    if (newPattern === null) {
+        alert("Pattern cannot be empty.");
+        return;
+    }
+
+    const newReplacement = prompt("Edit Replacement:", preset.replacement);
+
+    const newMethod = prompt("Edit Method (regex, simple, whole-words, combined-words):", preset.method);
+    if (!["regex", "simple", "whole-words", "combined-words"].includes(newMethod)) {
+        alert("Invalid method. Must be one of: regex, simple, whole-words, combined-words.");
+        return;
+    }
+
+    // Update the preset with the new values
+    preset.name = newName;
+    preset.pattern = newPattern;
+    preset.replacement = newReplacement;
+    preset.method = newMethod;
+
+    saveSettingsDebounced();
+    openPresetModal();
 }
 
 function newPresetForm() { return (
