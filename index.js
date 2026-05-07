@@ -1,8 +1,8 @@
 // Importing necessary functions and variables from the main extension script
 import { extension_settings, getContext, loadExtensionSettings } from "../../../extensions.js";
 
-// Importing debounced save functions to save data immediately
-import { saveSettingsDebounced, saveCharacterDebounced } from "../../../../script.js";
+// Importing a debounce save function to save setting data
+import { saveSettingsDebounced } from "../../../../script.js";
 
 // Importing custom functions
 import { openPresetModal } from "./preset_modal.js";
@@ -90,8 +90,6 @@ function onUndoButtonClick(event) {
 
   $(`#` + fieldID).val(undoContent);
 
-  saveCharacterDebounced();
-
   $("#quick-char-regex-undo-button_" + fieldID).prop("disabled", true);
 
   console.log("Undo successful! Reverted content:", undoContent);
@@ -153,8 +151,6 @@ function onReplaceButtonClick(event, ...args ) {
     $(`#` + fieldID)[0].dispatchEvent(inputEvent);
     const changeEvent = new Event('change', { bubbles: true });
     $(`#` + fieldID)[0].dispatchEvent(changeEvent);
-
-    saveCharacterDebounced();
 
     $("#quick-char-regex-undo-button_" + fieldID).prop("disabled", false);
 
