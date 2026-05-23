@@ -73,9 +73,7 @@ function escapeHtml(value) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
 }
-function escapeAttribute(value) {
-    return escapeHtml(value);
-}
+
 
 function populatePresets() {
     if (!extension_settings[extensionName].savedPresets || extension_settings[extensionName].savedPresets.length === 0) {
@@ -86,7 +84,7 @@ function populatePresets() {
         const escapedMethod = escapeHtml(preset.method);
         const escapedPattern = escapeHtml(preset.pattern);
         const escapedReplacement = escapeHtml(preset.replacement);
-        const escapedPresetNameAttribute = escapeAttribute(preset.name);
+        const escapedPresetNameAttribute = escapeHtml(preset.name);
         return `
         <tr class="quick-char-regex-modal-preset-row">
             <td class="quick-char-regex-preset-name"><strong>${escapedName}</strong></td>

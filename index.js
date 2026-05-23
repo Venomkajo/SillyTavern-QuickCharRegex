@@ -199,14 +199,14 @@ function addReplaceDiv(textarea) {
 // This function is called when the extension is loaded
 jQuery(async () => {
   // Loading HTML from a file
-  const regexRowHTML = createRegexSettingsMenu();
+  const regexSettingsMenuHTML = createRegexSettingsMenu(extension_settings[extensionName].extensionActive);
   const extensionButtonHTML = createExtensionButton();
 
   // Append the extension button to the menu
   $("#extensionsMenu").append(extensionButtonHTML);
 
   // Append the HTML to the appropriate places in the DOM
-  $("#form_sheld").before(regexRowHTML);
+  $("#form_sheld").before(regexSettingsMenuHTML);
 
   // Listening for events
   $("#quick-char-regex-extension-button").on("click", changeExtensionView);

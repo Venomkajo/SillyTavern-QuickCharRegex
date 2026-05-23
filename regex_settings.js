@@ -7,8 +7,8 @@ function createMethodOptions() {
     `);
 }
 
-function createRegexSettingsMenu() {
-    return (`<div class="quick-char-regex-settings" hidden id="quick-char-regex-menu">
+function createRegexSettingsMenu(isActive) {
+    return (`<div class="quick-char-regex-settings" ${isActive ? '' : 'hidden'} id="quick-char-regex-menu">
     <div class="inline-drawer">
         <div class="inline-drawer-toggle inline-drawer-header">
             <b>Quick Char Regex</b>
