@@ -20,7 +20,7 @@ const defaultSettings = { method: "simple", extensionActive: false, onlyMainChat
 
 // schema for saved presets: { name: unique string, method: string (only allowed options), pattern: string, replacement: string }
 
-const FORBIDDEN_FIELDS = ["send_textarea", "world_info_search", "settingsSearch"]
+const FORBIDDEN_FIELDS = ["send_textarea", "world_info_search", "settingsSearch", "scp-input"]
 
 // Loads the extension settings if they exist, otherwise initializes them to the defaults.
 async function loadSettings() {
